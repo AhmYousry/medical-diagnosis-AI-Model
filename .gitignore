@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Model artifacts / caches (weights are downloaded at build time, not committed)
+*.h5
+*.ckpt
+*.pt
+*.pth
+.cache/
+torch_cache/
+
+# Runtime
+AI/static/*.png
+AI/static/latest
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local

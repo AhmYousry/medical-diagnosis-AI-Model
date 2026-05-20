@@ -1,0 +1,18 @@
+# Web server
+Flask~=3.0
+flask-cors==4.0.0
+gunicorn==21.2.0
+
+# Core ML (PyTorch CPU build — much smaller image than CUDA)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.2.2
+torchvision==0.17.2
+
+# State-of-the-art chest X-ray models (DenseNet121 trained on 7 datasets,
+# detects 18 pathologies with calibrated probabilities)
+torchxrayvision==1.2.4
+
+# Image I/O + preprocessing
+numpy<2.0.0
+Pillow==10.3.0
+scikit-image==0.22.0

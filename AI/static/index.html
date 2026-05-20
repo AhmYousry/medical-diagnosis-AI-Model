@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PneumoDetect AI — Medical Diagnosis Model</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0b0f1a;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+      color: #e2e8f0;
+      padding: 2rem;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 640px;
+    }
+
+    .logo {
+      margin-bottom: 2rem;
+      display: inline-block;
+      position: relative;
+    }
+
+    .logo svg {
+      width: 140px;
+      height: 140px;
+      filter: drop-shadow(0 0 40px rgba(56, 189, 248, 0.15));
+    }
+
+    .logo-ring {
+      animation: spin 24s linear infinite;
+      transform-origin: center;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #f0f9ff 0%, #7dd3fc 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #7dd3fc;
+      margin-bottom: 2rem;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .btn-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .feature {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #94a3b8;
+    }
+
+    .feature-value {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+
+    .footer a {
+      color: #64748b;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      color: #94a3b8;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.75rem; }
+      .features { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; align-items: stretch; }
+      .btn { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#38bdf8"/>
+            <stop offset="100%" stop-color="#6366f1"/>
+          </linearGradient>
+          <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#7dd3fc"/>
+            <stop offset="100%" stop-color="#a5b4fc"/>
+          </linearGradient>
+        </defs>
+        <circle cx="70" cy="70" r="64" stroke="url(#grad1)" stroke-width="2" opacity="0.2" fill="none"/>
+        <circle class="logo-ring" cx="70" cy="70" r="58" stroke="url(#grad1)" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.3" fill="none"/>
+
+        <!-- Medical cross -->
+        <rect x="62" y="40" width="16" height="60" rx="4" fill="url(#grad1)"/>
+        <rect x="40" y="62" width="60" height="16" rx="4" fill="url(#grad1)"/>
+
+        <!-- Neural nodes -->
+        <circle cx="70" cy="20" r="4" fill="#7dd3fc" opacity="0.6"/>
+        <circle cx="20" cy="70" r="4" fill="#7dd3fc" opacity="0.6"/>
+        <circle cx="120" cy="70" r="4" fill="#7dd3fc" opacity="0.6"/>
+        <circle cx="70" cy="120" r="4" fill="#7dd3fc" opacity="0.6"/>
+
+        <!-- Connection lines -->
+        <line x1="70" y1="24" x2="62" y2="40" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+        <line x1="70" y1="24" x2="78" y2="40" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+        <line x1="24" y1="70" x2="40" y2="62" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+        <line x1="24" y1="70" x2="40" y2="78" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+        <line x1="116" y1="70" x2="100" y2="62" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+        <line x1="116" y1="70" x2="100" y2="78" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+        <line x1="70" y1="116" x2="62" y2="100" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+        <line x1="70" y1="116" x2="78" y2="100" stroke="#7dd3fc" stroke-width="0.8" opacity="0.3"/>
+      </svg>
+    </div>
+
+    <h1>PneumoDetect AI</h1>
+    <p class="subtitle">
+      Open-source deep learning model for pneumonia detection from chest X-ray images.
+      Built with TensorFlow &amp; EfficientNet.
+    </p>
+
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Model loaded &amp; ready
+    </div>
+
+    <div class="actions">
+      <a href="/download" class="btn btn-primary">
+        <svg class="btn-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 3v12m0 0l-4-4m4 4l4-4M3 17h14"/>
+        </svg>
+        Download Model
+      </a>
+      <a href="https://github.com" target="_blank" rel="noopener" class="btn btn-secondary">
+        <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"/>
+        </svg>
+        Source Code
+      </a>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-label">Architecture</div>
+        <div class="feature-value">EfficientNet-B0</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-label">Accuracy</div>
+        <div class="feature-value">96.4% AUC</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-label">Inference</div>
+        <div class="feature-value">&lt; 3 seconds</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Open source — <a href="#">MIT License</a></p>
+    </div>
+  </div>
+</body>
+</html>
